@@ -4,7 +4,7 @@ const axios = require('axios');
 require("dotenv").config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
   res.send("Server çalışıyor!");
 });
 
-app.listen(port, () => {
-  console.log(`Server ${port} numaralı portta çalışıyor`);
+
+app.listen(PORT, () => {
+  console.log(`Server ${PORT} numaralı portta çalışıyor`);
 });
