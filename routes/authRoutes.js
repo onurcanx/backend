@@ -225,13 +225,30 @@ router.delete("/comments/:id", async (req, res) => {
     const { id } = req.params;
     const { user_id } = req.body;
 
+    // Kullanıcının admin olup olmadığını kontrol et
+    const user = await pool.query(
+      "SELECT is_admin FROM users WHERE id = $1",
+      [user_id]
+    );
+
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+    }
+
+    const isAdmin = user.rows[0].is_admin;
+
     // Yorumun kullanıcıya ait olup olmadığını kontrol et
     const comment = await pool.query(
-      "SELECT * FROM comments WHERE id = $1 AND user_id = $2",
-      [id, user_id]
+      "SELECT * FROM comments WHERE id = $1",
+      [id]
     );
 
     if (comment.rows.length === 0) {
+      return res.status(404).json({ message: "Yorum bulunamadı." });
+    }
+
+    // Eğer kullanıcı admin değilse ve yorum kendisine ait değilse silme yetkisi yok
+    if (!isAdmin && comment.rows[0].user_id !== parseInt(user_id)) {
       return res.status(403).json({ message: "Bu yorumu silme yetkiniz yok." });
     }
 
