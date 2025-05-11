@@ -219,5 +219,30 @@ router.get("/user/:id/comments", async (req, res) => {
   }
 });
 
+// Yorum silme
+router.delete("/comments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.body;
+
+    // Yorumun kullanıcıya ait olup olmadığını kontrol et
+    const comment = await pool.query(
+      "SELECT * FROM comments WHERE id = $1 AND user_id = $2",
+      [id, user_id]
+    );
+
+    if (comment.rows.length === 0) {
+      return res.status(403).json({ message: "Bu yorumu silme yetkiniz yok." });
+    }
+
+    // Yorumu sil
+    await pool.query("DELETE FROM comments WHERE id = $1", [id]);
+    res.json({ message: "Yorum başarıyla silindi." });
+  } catch (err) {
+    console.error("Yorum silme hatası:", err);
+    res.status(500).json({ message: "Yorum silinirken bir hata oluştu." });
+  }
+});
+
 module.exports = router;
 
