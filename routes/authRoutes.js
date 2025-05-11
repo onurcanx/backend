@@ -135,7 +135,7 @@ router.get("/user/:id", async (req, res) => {
     
     // created_at sütunu olmadığı için sadece temel bilgileri getir
     const user = await pool.query(
-      "SELECT id, username, email FROM users WHERE id = $1", 
+      "SELECT id, username, email, is_admin FROM users WHERE id = $1", 
       [id]
     );
     
