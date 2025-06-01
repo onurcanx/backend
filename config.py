@@ -6,10 +6,10 @@ load_dotenv()
 
 # PostgreSQL bağlantı ayarları
 DB_CONFIG = {
-    'dbname': os.getenv('DB_NAME', 'your_database'),
-    'user': os.getenv('DB_USER', 'your_username'),
-    'password': os.getenv('DB_PASS', 'your_password'),
-    'host': os.getenv('DB_HOST', 'localhost'),
+    'dbname': os.getenv('DB_NAME', 'users_db_152v'),
+    'user': os.getenv('DB_USER', 'users_db_152v_user'),
+    'password': os.getenv('DB_PASS', 'xzo5rAYNBbSS1CVrzEtzFu38sv5FE4pg'),
+    'host': os.getenv('DB_HOST', 'dpg-d0chm2euk2gs739927sg-a'),
     'port': os.getenv('DB_PORT', '5432')
 }
 
