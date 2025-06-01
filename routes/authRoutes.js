@@ -260,6 +260,70 @@ router.delete("/comments/:id", async (req, res) => {
     res.status(500).json({ message: "Yorum silinirken bir hata oluştu." });
   }
 });
+router.get("/comments/analyze/:movieId", async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        console.log("🎯 Analiz isteği alındı, film ID:", movieId);
+        
+        // Python script'inin tam yolunu belirt
+        const scriptPath = require('path').join(__dirname, '..', 'commentAnalyzer.py');
+        console.log("📜 Python script yolu:", scriptPath);
+        
+        // Python script'ini çalıştır
+        const pythonProcess = spawn('python', [scriptPath, movieId]);
+        console.log("🚀 Python script'i başlatıldı");
+        
+        let result = '';
+        let errorOutput = '';
+        
+        pythonProcess.stdout.on('data', (data) => {
+            const output = data.toString();
+            console.log("📤 Python çıktısı:", output);
+            result += output;
+        });
+        
+        pythonProcess.stderr.on('data', (data) => {
+            const error = data.toString();
+            console.error("❌ Python hatası:", error);
+            errorOutput += error;
+        });
+        
+        pythonProcess.on('close', (code) => {
+            console.log("🔚 Python script'i kapandı, çıkış kodu:", code);
+            
+            if (code !== 0) {
+                console.error("❌ Python script'i hata ile kapandı");
+                return res.status(500).json({
+                    status: "error",
+                    message: "Yorum analizi sırasında bir hata oluştu",
+                    error: errorOutput
+                });
+            }
+            
+            try {
+                console.log("📝 Python çıktısı işleniyor:", result);
+                const analysisResult = JSON.parse(result);
+                console.log("✅ Analiz sonuçları:", analysisResult);
+                res.json(analysisResult);
+            } catch (err) {
+                console.error("❌ JSON ayrıştırma hatası:", err);
+                res.status(500).json({
+                    status: "error",
+                    message: "Sonuç işlenirken bir hata oluştu",
+                    error: err.message,
+                    rawOutput: result
+                });
+            }
+        });
+    } catch (err) {
+        console.error("❌ Analiz sırasında hata:", err);
+        res.status(500).json({ 
+            status: "error",
+            message: "Sunucu hatası",
+            error: err.message 
+        });
+    }
+});
 
 module.exports = router;
 
