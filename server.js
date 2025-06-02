@@ -12,10 +12,8 @@ app.use(express.json());
 
 // Rotalar
 const authRoutes = require("./routes/authRoutes");
-const commentRoutes = require("./routes/commentRoutes");
 
 app.use("/api/auth", authRoutes);
-app.use("/api/analyzer", commentRoutes);
 
 // Test endpoint
 app.get("/", (req, res) => {
