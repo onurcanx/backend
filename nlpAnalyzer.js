@@ -1,6 +1,20 @@
 const natural = require('natural');
 const tokenizer = new natural.WordTokenizer();
-const stopwords = require('stopwords-tr');
+
+// Türkçe stop words listesi
+const stopwords = new Set([
+    'acaba', 'ama', 'aslında', 'az', 'bazı', 'belki', 'biri', 'birkaç', 'birşey', 'biz', 'bu',
+    'çok', 'çünkü', 'da', 'daha', 'de', 'defa', 'diye', 'eğer', 'en', 'gibi', 'hem', 'hep',
+    'hepsi', 'her', 'hiç', 'için', 'ile', 'ise', 'kez', 'ki', 'kim', 'mı', 'mu', 'mü', 'nasıl',
+    'ne', 'neden', 'nerde', 'nerede', 'nereye', 'niçin', 'niye', 'o', 'sanki', 'şey', 'siz',
+    'şu', 'tüm', 've', 'veya', 'ya', 'yani', 'yine', 'yok', 'zaten', 'şöyle', 'böyle', 'öyle',
+    'şu', 'bu', 'şey', 'şeyler', 'şeyi', 'şeyin', 'şeyden', 'şeye', 'şeyde', 'şeylerin',
+    'şeylerden', 'şeylere', 'şeylerde', 'şeyleri', 'şeylerle', 'şeylerin', 'şeylerden',
+    'şeylere', 'şeylerde', 'şeyleri', 'şeylerle', 'şeylerin', 'şeylerden', 'şeylere',
+    'şeylerde', 'şeyleri', 'şeylerle', 'şeylerin', 'şeylerden', 'şeylere', 'şeylerde',
+    'şeyleri', 'şeylerle', 'şeylerin', 'şeylerden', 'şeylere', 'şeylerde', 'şeyleri',
+    'şeylerle', 'şeylerin', 'şeylerden', 'şeylere', 'şeylerde', 'şeyleri', 'şeylerle'
+]);
 
 class CommentAnalyzer {
     constructor() {
@@ -48,7 +62,7 @@ class CommentAnalyzer {
         const tokens = tokenizer.tokenize(cleanedText);
         return tokens.filter(token => 
             this.isValidWord(token) && 
-            !stopwords.includes(token)
+            !stopwords.has(token)
         );
     }
 
@@ -142,4 +156,4 @@ class CommentAnalyzer {
     }
 }
 
-module.exports = CommentAnalyzer; 
+module.exports = CommentAnalyzer;
